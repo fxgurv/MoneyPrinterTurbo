@@ -2,6 +2,7 @@ import os
 import platform
 import sys
 from uuid import uuid4
+import random
 
 import streamlit as st
 from loguru import logger
@@ -48,11 +49,11 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 st.title("MoneyPrinterTurbo")
 
 support_locales = [
+    "en-US",
     "zh-CN",
     "zh-HK",
     "zh-TW",
     "de-DE",
-    "en-US",
     "fr-FR",
     "vi-VN",
     "th-TH",
@@ -66,14 +67,45 @@ system_locale = utils.get_system_locale()
 # print(f"******** system locale: {system_locale} ********")
 
 if "video_subject" not in st.session_state:
-    st.session_state["video_subject"] = ""
+    st.session_state["video_subject"] = random.choice([
+        "What is the meaning of life?",
+        "How to make money online?",
+        "What is love?",
+        "Latest technology trends",
+        "The history of artificial intelligence",
+        "Top 10 travel destinations",
+        "Healthy eating tips",
+        "Best productivity habits",
+        "Mindfulness and meditation",
+        "Space exploration",
+        "The benefits of exercise",
+        "How to learn a new language",
+        "The science of dreams",
+        "Top inventions of the 21st century",
+        "How to invest in stocks",
+        "The future of transportation",
+        "Best practices for remote work",
+        "The psychology of success",
+        "How to improve public speaking",
+        "The impact of social media",
+        "The art of storytelling",
+        "How to manage stress",
+        "The evolution of the internet",
+        "The importance of mental health",
+        "How to start a business",
+        "The history of cinema",
+        "The future of renewable energy",
+        "How to cook healthy meals",
+        "The science of climate change",
+        "How to learn programming",
+        "The benefits of reading"
+    ])
 if "video_script" not in st.session_state:
     st.session_state["video_script"] = ""
 if "video_terms" not in st.session_state:
     st.session_state["video_terms"] = ""
 if "ui_language" not in st.session_state:
-    st.session_state["ui_language"] = config.ui.get("language", system_locale)
-
+    st.session_state["ui_language"] = "en-US"  # Set default language to English
 
 def get_all_fonts():
     fonts = []
@@ -251,12 +283,12 @@ if not config.app.get("hide_config", False):
 
                 with llm_helper:
                     tips = """
-                           ##### Ollama配置说明
-                           - **API Key**: 随便填写，比如 123
-                           - **Base Url**: 一般为 http://localhost:11434/v1
-                              - 如果 `MoneyPrinterTurbo` 和 `Ollama` **不在同一台机器上**，需要填写 `Ollama` 机器的IP地址
-                              - 如果 `MoneyPrinterTurbo` 是 `Docker` 部署，建议填写 `http://host.docker.internal:11434/v1`
-                           - **Model Name**: 使用 `ollama list` 查看，比如 `qwen:7b`
+                           ##### Ollama Configuration
+                           - **API Key**: Enter any string, e.g., `123`
+                           - **Base Url**: Generally `http://localhost:11434/v1`
+                              - If `MoneyPrinterTurbo` and `Ollama` are **not on the same machine**, enter the IP address of the `Ollama` machine
+                              - If `MoneyPrinterTurbo` is deployed with Docker, consider using `http://host.docker.internal:11434/v1`
+                           - **Model Name**: Check using `ollama list`, e.g., `qwen:7b`
                            """
 
             if llm_provider == "openai":
@@ -264,11 +296,11 @@ if not config.app.get("hide_config", False):
                     llm_model_name = "gpt-3.5-turbo"
                 with llm_helper:
                     tips = """
-                           ##### OpenAI 配置说明
-                           > 需要VPN开启全局流量模式
-                           - **API Key**: [点击到官网申请](https://platform.openai.com/api-keys)
-                           - **Base Url**: 可以留空
-                           - **Model Name**: 填写**有权限**的模型，[点击查看模型列表](https://platform.openai.com/settings/organization/limits)
+                           ##### OpenAI Configuration
+                           > Requires VPN to enable global traffic mode
+                           - **API Key**: [Apply on the official website](https://platform.openai.com/api-keys)
+                           - **Base Url**: Can be left blank
+                           - **Model Name**: Enter a model you have access to, [View model list](https://platform.openai.com/settings/organization/limits)
                            """
 
             if llm_provider == "moonshot":
@@ -276,22 +308,22 @@ if not config.app.get("hide_config", False):
                     llm_model_name = "moonshot-v1-8k"
                 with llm_helper:
                     tips = """
-                           ##### Moonshot 配置说明
-                           - **API Key**: [点击到官网申请](https://platform.moonshot.cn/console/api-keys)
-                           - **Base Url**: 固定为 https://api.moonshot.cn/v1
-                           - **Model Name**: 比如 moonshot-v1-8k，[点击查看模型列表](https://platform.moonshot.cn/docs/intro#%E6%A8%A1%E5%9E%8B%E5%88%97%E8%A1%A8)
+                           ##### Moonshot Configuration
+                           - **API Key**: [Apply on the official website](https://platform.moonshot.cn/console/api-keys)
+                           - **Base Url**: Fixed as `https://api.moonshot.cn/v1`
+                           - **Model Name**: E.g., `moonshot-v1-8k`, [View model list](https://platform.moonshot.cn/docs/intro#%E6%A8%A1%E5%9E%8B%E5%88%97%E8%A1%A8)
                            """
             if llm_provider == "oneapi":
                 if not llm_model_name:
                     llm_model_name = (
-                        "claude-3-5-sonnet-20240620"  # 默认模型，可以根据需要调整
+                        "claude-3-5-sonnet-20240620"  # Default model, adjust as needed
                     )
                 with llm_helper:
                     tips = """
-                        ##### OneAPI 配置说明
-                        - **API Key**: 填写您的 OneAPI 密钥
-                        - **Base Url**: 填写 OneAPI 的基础 URL
-                        - **Model Name**: 填写您要使用的模型名称，例如 claude-3-5-sonnet-20240620
+                        ##### OneAPI Configuration
+                        - **API Key**: Enter your OneAPI key
+                        - **Base Url**: Enter the OneAPI base URL
+                        - **Model Name**: Enter the model name you want to use, e.g., `claude-3-5-sonnet-20240620`
                         """
 
             if llm_provider == "qwen":
@@ -299,10 +331,10 @@ if not config.app.get("hide_config", False):
                     llm_model_name = "qwen-max"
                 with llm_helper:
                     tips = """
-                           ##### 通义千问Qwen 配置说明
-                           - **API Key**: [点击到官网申请](https://dashscope.console.aliyun.com/apiKey)
-                           - **Base Url**: 留空
-                           - **Model Name**: 比如 qwen-max，[点击查看模型列表](https://help.aliyun.com/zh/dashscope/developer-reference/model-introduction#3ef6d0bcf91wy)
+                           ##### Qwen Configuration
+                           - **API Key**: [Apply on the official website](https://dashscope.console.aliyun.com/apiKey)
+                           - **Base Url**: Leave blank
+                           - **Model Name**: E.g., `qwen-max`, [View model list](https://help.aliyun.com/zh/dashscope/developer-reference/model-introduction#3ef6d0bcf91wy)
                            """
 
             if llm_provider == "g4f":
@@ -310,20 +342,20 @@ if not config.app.get("hide_config", False):
                     llm_model_name = "gpt-3.5-turbo"
                 with llm_helper:
                     tips = """
-                           ##### gpt4free 配置说明
-                           > [GitHub开源项目](https://github.com/xtekky/gpt4free)，可以免费使用GPT模型，但是**稳定性较差**
-                           - **API Key**: 随便填写，比如 123
-                           - **Base Url**: 留空
-                           - **Model Name**: 比如 gpt-3.5-turbo，[点击查看模型列表](https://github.com/xtekky/gpt4free/blob/main/g4f/models.py#L308)
+                           ##### G4F Configuration
+                           > [GitHub open-source project](https://github.com/xtekky/gpt4free), can use GPT models for free, but **stability is poor**
+                           - **API Key**: Enter any string, e.g., `123`
+                           - **Base Url**: Leave blank
+                           - **Model Name**: E.g., `gpt-3.5-turbo`, [View model list](https://github.com/xtekky/gpt4free/blob/main/g4f/models.py#L308)
                            """
             if llm_provider == "azure":
                 with llm_helper:
                     tips = """
-                           ##### Azure 配置说明
-                           > [点击查看如何部署模型](https://learn.microsoft.com/zh-cn/azure/ai-services/openai/how-to/create-resource)
-                           - **API Key**: [点击到Azure后台创建](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/OpenAI)
-                           - **Base Url**: 留空
-                           - **Model Name**: 填写你实际的部署名
+                           ##### Azure Configuration
+                           > [Learn how to deploy models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource)
+                           - **API Key**: [Create on Azure portal](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/OpenAI)
+                           - **Base Url**: Leave blank
+                           - **Model Name**: Enter your actual deployment name
                            """
 
             if llm_provider == "gemini":
@@ -332,11 +364,11 @@ if not config.app.get("hide_config", False):
 
                 with llm_helper:
                     tips = """
-                            ##### Gemini 配置说明
-                            > 需要VPN开启全局流量模式
-                           - **API Key**: [点击到官网申请](https://ai.google.dev/)
-                           - **Base Url**: 留空
-                           - **Model Name**: 比如 gemini-1.0-pro
+                            ##### Gemini Configuration
+                            > Requires VPN to enable global traffic mode
+                           - **API Key**: [Apply on the official website](https://ai.google.dev/)
+                           - **Base Url**: Leave blank
+                           - **Model Name**: E.g., `gemini-1.0-pro`
                            """
 
             if llm_provider == "deepseek":
@@ -346,24 +378,24 @@ if not config.app.get("hide_config", False):
                     llm_base_url = "https://api.deepseek.com"
                 with llm_helper:
                     tips = """
-                           ##### DeepSeek 配置说明
-                           - **API Key**: [点击到官网申请](https://platform.deepseek.com/api_keys)
-                           - **Base Url**: 固定为 https://api.deepseek.com
-                           - **Model Name**: 固定为 deepseek-chat
+                           ##### DeepSeek Configuration
+                           - **API Key**: [Apply on the official website](https://platform.deepseek.com/api_keys)
+                           - **Base Url**: Fixed as `https://api.deepseek.com`
+                           - **Model Name**: Fixed as `deepseek-chat`
                            """
 
             if llm_provider == "ernie":
                 with llm_helper:
                     tips = """
-                           ##### 百度文心一言 配置说明
-                           - **API Key**: [点击到官网申请](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application)
-                           - **Secret Key**: [点击到官网申请](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application)
-                           - **Base Url**: 填写 **请求地址** [点击查看文档](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/jlil56u11#%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)
+                           ##### ERNIE Configuration
+                           - **API Key**: [Apply on the official website](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application)
+                           - **Secret Key**: [Apply on the official website](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application)
+                           - **Base Url**: Enter the **request address** [View documentation](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/jlil56u11#%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)
                            """
 
             if tips and config.ui["language"] == "zh":
                 st.warning(
-                    "中国用户建议使用 **DeepSeek** 或 **Moonshot** 作为大模型提供商\n- 国内可直接访问，不需要VPN \n- 注册就送额度，基本够用"
+                    "Chinese users are advised to use **DeepSeek** or **Moonshot** as large model providers\n- Directly accessible within China, no VPN needed\n- Free trial quota available"
                 )
                 st.info(tips)
 
@@ -445,13 +477,17 @@ with left_panel:
 
         video_languages = [
             (tr("Auto Detect"), ""),
+            ("English", "en-US"),
+            ("Chinese (Simplified)", "zh-CN"),
+            ("Chinese (Traditional)", "zh-TW"),
+            ("German", "de-DE"),
+            ("French", "fr-FR"),
+            ("Vietnamese", "vi-VN"),
+            ("Thai", "th-TH"),
         ]
-        for code in support_locales:
-            video_languages.append((code, code))
-
         selected_index = st.selectbox(
             tr("Script Language"),
-            index=0,
+            index=1,  # Default to English
             options=range(
                 len(video_languages)
             ),  # Use the index as the internal option value
@@ -644,7 +680,7 @@ with middle_panel:
                 )
                 # if the voice file generation failed, try again with a default content.
                 if not sub_maker:
-                    play_content = "This is a example voice. if you hear this, the voice synthesis failed with the original content."
+                    play_content = "This is an example voice. If you hear this, the voice synthesis failed with the original content."
                     sub_maker = voice.tts(
                         text=play_content,
                         voice_name=voice_name,
