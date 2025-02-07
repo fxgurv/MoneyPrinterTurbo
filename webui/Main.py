@@ -41,12 +41,11 @@ st.set_page_config(
     },
 )
 
-
 hide_streamlit_style = """
 <style>#root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 0rem;}</style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-st.title(f"MoneyPrinterTurbo v{config.project_version}")
+st.title("MoneyPrinterTurbo")
 
 support_locales = [
     "zh-CN",
@@ -166,8 +165,6 @@ def tr(key):
     loc = locales.get(st.session_state["ui_language"], {})
     return loc.get("Translation", {}).get(key, key)
 
-
-st.write(tr("Get Help"))
 
 llm_provider = config.app.get("llm_provider", "").lower()
 
